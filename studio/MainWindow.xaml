@@ -6,8 +6,7 @@
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:local="clr-namespace:studio"
         mc:Ignorable="d"
-        Title="WPF" Height="500" Width="800">
-
+        Title="WPF小畫家" Height="661" Width="1126">
     <DockPanel>
         <Menu Height="30" DockPanel.Dock="Top">
             <MenuItem Header="檔案" Height="30">
@@ -17,55 +16,50 @@
                 <MenuItem Header="結束" Height="30"/>
             </MenuItem>
         </Menu>
-
         <ToolBarTray Height="40" DockPanel.Dock="Top">
-            <ToolBar Height="35" Background="Azure" Width="400">
-                <Label Content="筆刷色彩" Width="60" VerticalAlignment="Center"
-                   VerticalContentAlignment="Center" FontSize="14"/>
-                <xctk:ColorPicker x:Name="strokeColorPicker" Width="100" Height="30"
-                                  DisplayColorAndName="True"
-                                  SelectedColorChanged="strokeColorPicker_SelectedColorChanged"/>
-                <Label Content="填滿色彩" Width="60" VerticalAlignment="Center"
-                   VerticalContentAlignment="Center" FontSize="14"/>
-                <xctk:ColorPicker x:Name="fillColorPicker" Width="100" Height="30"
-                                  DisplayColorAndName="True"
-                                  SelectedColorChanged="fillColorPicker_SelectedColorChanged"/>
+            <ToolBar Height="35" Width="600">
+                <Label Content="筆刷色彩" Width="70" VerticalAlignment="Center" VerticalContentAlignment="Center" FontSize="14"/>
+                <xctk:ColorPicker x:Name="strokeColorPicker" Width="100" Height="30" DisplayColorAndName="True" SelectedColorChanged="strokeColorPicker_SelectedColorChanged"/>
+                <Label Content="填滿色彩" Width="70" VerticalAlignment="Center" VerticalContentAlignment="Center" FontSize="14"/>
+                <xctk:ColorPicker x:Name="fillColorPicker" Width="100" Height="30" DisplayColorAndName="True" SelectedColorChanged="fillColorPicker_SelectedColorChanged"/>
+                <Slider x:Name="strokeThicknessSlider" Width="120" VerticalAlignment="Center" Minimum="1" Value="1" TickFrequency="1" IsSnapToTickEnabled="True" Margin="30,0,0,0" ValueChanged="strokeThicknessSlider_ValueChanged"/>
+                <Label Width="40" VerticalAlignment="Center" VerticalContentAlignment="Center" FontSize="14" FontWeight="Bold" Content="{Binding Value, ElementName=strokeThicknessSlider}" Margin="10,0,0,0" HorizontalContentAlignment="Center"/>
             </ToolBar>
-
-            <ToolBar Height="35" Width="300" Background="Azure">
-                <RadioButton Width="35" Height="35" Tag="Line" Click="ShapeButton_Click">
+            <ToolBar Height="40" Width="300" Background="Azure">
+                <RadioButton Width="35" Height="35" Tag="Line" Checked="ShapeButton_Checked">
                     <Image Height="30" Width="30" Source="/line.png"/>
                 </RadioButton>
-                <RadioButton Width="35" Height="35" Tag="Rectangle" Click="ShapeButton_Click">
+                <RadioButton Width="35" Height="35" Tag="Rectangle" Checked="ShapeButton_Checked">
                     <Image Height="30" Width="30" Source="/rectangle.png"/>
                 </RadioButton>
-                <RadioButton Width="35" Height="35" Tag="Ellipse" Click="ShapeButton_Click">
+                <RadioButton Width="35" Height="35" Tag="Ellipse" Checked="ShapeButton_Checked">
                     <Image Height="30" Width="30" Source="/ellipse.png"/>
                 </RadioButton>
-                <RadioButton Width="35" Height="35" Tag="Polyline" Click="ShapeButton_Click">
+                <RadioButton Width="35" Height="35" Tag="Polyline" Checked="ShapeButton_Checked">
                     <Image Height="30" Width="30" Source="/polyline.png"/>
                 </RadioButton>
-            </ToolBar>
-
-            <ToolBar Height="35" Width="200" Background="Azure">
-                <Label Content="筆刷粗細" VerticalAlignment="Center"/>
-                <Slider x:Name="strokeThicknessSlider" Minimum="1" Maximum="10" Width="100"
-                        ValueChanged="strokeThicknessSlider_ValueChanged"/>
+                <Separator/>
+                <Button x:Name="EraserButton" Width="35" Height="35" Tag="Eraser" HorizontalAlignment="Center" VerticalAlignment="Center" Click="EraserButton_Click">
+                    <Image Width="30" Height="30" Source="/eraser.png" Stretch="UniformToFill"/>
+                </Button>
+                <Button x:Name="ClearButton" Width="35" Height="35" Tag="Clear" HorizontalAlignment="Center" VerticalAlignment="Center" Click="ClearButton_Click">
+                    <Image Width="30" Height="30" Source="/trashcan.png" Stretch="UniformToFill"/>
+                </Button>
             </ToolBar>
         </ToolBarTray>
-
         <StatusBar Height="40" DockPanel.Dock="Bottom" Background="Orchid">
             <StatusBarItem>
-                <Label x:Name="statusLabel" Content ="Ready" Width="100" Height="28" Margin="100,0,0,0" FontSize="14"/>
+                <Label x:Name="statusLabel" Content ="Ready" Width="300" Height="28" Margin="30,0,0,0" FontSize="14"/>
             </StatusBarItem>
+            <Separator/>
             <StatusBarItem>
                 <Label x:Name="colorLabel" Width="400" Height="28" FontSize="14"/>
             </StatusBarItem>
+            <Separator/>
             <StatusBarItem>
-                <Label x:Name="shapeLabel" Width="200" Height="28" FontSize="14"/>
+                <Label x:Name="shapeLabel" Width="350" Height="28" FontSize="14"/>
             </StatusBarItem>
         </StatusBar>
-
-        <Canvas Background="Transparent"/>
+        <Canvas x:Name="MyCanvas" Background="#FFF7F7E6" MouseEnter="MyCanvas_MouseEnter" MouseLeftButtonDown="MyCanvas_MouseLeftButtonDown" MouseMove="MyCanvas_MouseMove" MouseLeftButtonUp="MyCanvas_MouseLeftButtonUp"/>
     </DockPanel>
 </Window>
