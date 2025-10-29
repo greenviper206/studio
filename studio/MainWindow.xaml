@@ -10,10 +10,8 @@
     <DockPanel>
         <Menu Height="30" DockPanel.Dock="Top">
             <MenuItem Header="檔案" Height="30">
-                <MenuItem Header="開新檔案" Height="30"/>
-                <MenuItem Header="開啟舊檔" Height="30"/>
-                <MenuItem Header="儲存檔案" Height="30"/>
-                <MenuItem Header="結束" Height="30"/>
+                <MenuItem x:Name="OpenMenuItem" Header="開啟舊檔" Height="30" Click="OpenCanvasButton_Click"/>
+                <MenuItem x:Name="SaveCanvas" Header="儲存成圖形檔案" Height="30" Click="SaveCanvasButton_Click"/>
             </MenuItem>
         </Menu>
         <ToolBarTray Height="40" DockPanel.Dock="Top">

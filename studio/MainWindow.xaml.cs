@@ -1,8 +1,13 @@
+using Microsoft.Win32;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Markup;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using System.Xml;
 
 namespace studio
 {
@@ -216,30 +221,122 @@ namespace studio
             {
                 case "Line":
                     var line = MyCanvas.Children.OfType<Line>().LastOrDefault();
-                    line.Stroke = strokeBrush;
-                    line.StrokeThickness = strokeThickness;
+                    if (line != null)
+                    {
+                        line.Stroke = strokeBrush;
+                        line.StrokeThickness = strokeThickness;
+                    }
                     break;
 
                 case "Rectangle":
                     var rect = MyCanvas.Children.OfType<Rectangle>().LastOrDefault();
-                    rect.Stroke = strokeBrush;
-                    rect.Fill = fillBrush;
-                    rect.StrokeThickness = strokeThickness;
+                    if (rect != null)
+                    {
+                        rect.Stroke = strokeBrush;
+                        rect.Fill = fillBrush;
+                        rect.StrokeThickness = strokeThickness;
+                    }
                     break;
 
                 case "Ellipse":
                     var ellipse = MyCanvas.Children.OfType<Ellipse>().LastOrDefault();
-                    ellipse.Stroke = strokeBrush;
-                    ellipse.Fill = fillBrush;
-                    ellipse.StrokeThickness = strokeThickness;
+                    if (ellipse != null)
+                    {
+                        ellipse.Stroke = strokeBrush;
+                        ellipse.Fill = fillBrush;
+                        ellipse.StrokeThickness = strokeThickness;
+                    }
                     break;
 
                 case "Polyline":
                     var polyline = MyCanvas.Children.OfType<Polyline>().LastOrDefault();
-                    polyline.Stroke = strokeBrush;
-                    polyline.Fill = fillBrush;
-                    polyline.StrokeThickness = strokeThickness;
+                    if (polyline != null)
+                    {
+                        polyline.Stroke = strokeBrush;
+                        polyline.Fill = fillBrush;
+                        polyline.StrokeThickness = strokeThickness;
+                    }
                     break;
+            }
+        }
+        private void SaveCanvasButton_Click(object sender, RoutedEventArgs e)
+        {
+            SaveFileDialog saveFileDialog = new SaveFileDialog
+            {
+                Title = "Save Canvas as Image",
+                Filter = "PNG Image|*.png|JPEG Image|*.jpg|Canvas File(*.xml)|*.xml|所有檔案(*.*)|*.*",
+                DefaultExt = "png"
+            };
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                int w = Convert.ToInt32(MyCanvas.ActualWidth);
+                int h = Convert.ToInt32(MyCanvas.ActualHeight);
+
+                RenderTargetBitmap renderBitmap = new RenderTargetBitmap(w, h, 96d, 96d, PixelFormats.Pbgra32);
+                renderBitmap.Render(MyCanvas);
+
+                BitmapEncoder? encoder = null;
+                string ext = System.IO.Path.GetExtension(saveFileDialog.FileName).ToLower();
+                switch (ext) 
+                { 
+                    case ".jpg":
+                        encoder = new JpegBitmapEncoder();
+                        break;
+                    case ".png":
+                        encoder = new PngBitmapEncoder();
+                        break;
+                    case ".xml":
+                        //Canvas tempCanvas = new Canvas();
+
+                        //var shapes = MyCanvas.Children.Cast<Shape>().ToList();
+
+                        //foreach (var shape in shapes)
+                        //{
+                        //    tempCanvas.Children.Add(shape);
+                        //}
+
+                        string xmlString = XamlWriter.Save(MyCanvas);
+                        File.WriteAllText(saveFileDialog.FileName, xmlString);
+                        break;
+                    default:
+                        break;
+                }
+
+                if (encoder != null)
+                {
+                    encoder.Frames.Add(BitmapFrame.Create(renderBitmap));
+
+                    using (FileStream outStream = new FileStream(saveFileDialog.FileName, FileMode.Create))
+                    {
+                        encoder.Save(outStream);
+                    }
+                    MessageBox.Show("File saved successfully!");
+                }
+            }
+        }
+        private void OpenCanvasButton_Click(object sender, RoutedEventArgs e) 
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog
+            {
+                Title = "Open Canvas from File",
+                Filter = "Canvas File(*.xml)|*.xml|所有檔案(*.*)|*.*",
+                DefaultExt = "xml"
+            };
+            if (openFileDialog.ShowDialog() == true)
+            {
+                string filePath = openFileDialog.FileName;
+                string canvasXaml = File.ReadAllText(filePath);
+
+                Canvas tempCanvas = XamlReader.Parse(canvasXaml) as Canvas;
+
+                var canvasChildren = tempCanvas.Children.Cast<Shape>().ToList();
+
+                foreach (var child in canvasChildren)
+                {
+                    tempCanvas.Children.Remove(child);
+                    MyCanvas.Children.Add(child);
+                }
+                MessageBox.Show("Canvas loaded successfully!");
             }
         }
     }
